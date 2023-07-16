@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+
+    <link type="image/x-icon" href="svg/done.svg" rel="shortcut icon">
+    <title>Junior Task</title>
+</head>
+
+<body>
+    <div class="wrapper-outer">
+        <div class="wrapper-inner">
+            <!-- new-task -->
+            <section class="new-task">
+                <div class="new-task__priority  one-w">
+                    <p class="new-task__priority_title title title_gray">Приоритет:</p>
+                    <div class="new-task__priority_dd-list dd-list">
+                        <button class="dd-list__selected btn">средний</button>
+                        <ul class="dd-list__all">
+                            <li class="dd-list__item dd-list__item_low">низкий</li>
+                            <li class="dd-list__item dd-list__item_medium">средний</li>
+                            <li class="dd-list__item dd-list__item_high">высокий</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="new-task__text">
+                    <p class="new-task__text_title title title_gray">Текст задачи:</p>
+                    <textarea rows="1" placeholder="Введите текст..." class="new-task__text_content"></textarea>
+                    <p class="new-task__text_warning">Заполните поле</p>
+                </div>
+                <button class="new-task__btn btn one-w">Добавить задачу</button>
+            </section>
+            <!-- /new-task -->
+
+            <!-- filters -->
+            <section class="filters">
+
+                <div class="filters__item filters__priority">
+                    <p class="filters__priority_title title">Фильтр по приоритету:</p>
+                    <div class="filters__priority_dd-list dd-list one-w">
+                        <ul class="dd-list__all">
+                            <li class="dd-list__item dd-list__item_default">любой</li>
+                            <li class="dd-list__item dd-list__item_low">низкий</li>
+                            <li class="dd-list__item dd-list__item_medium">средний</li>
+                            <li class="dd-list__item dd-list__item_high">высокий</li>
+                        </ul>
+                        <button class="dd-list__selected btn">любой</button>
+                    </div>
+                </div>
+
+                <div class="filters__item filters__status">
+                    <p class="filters__status_title title">Фильтр по статусу:</p>
+                    <div class="filters__status_wrapper">
+                        <label class="active filters__status_item selected-filter">
+                            <input class="filters__status_checkbox" type="checkbox" checked>
+                            <span class="filters__status_label">активные</span>
+                            <span class="filters__status_custom"></span>
+                        </label>
+                        <label class="canceled filters__status_item selected-filter">
+                            <input class="filters__status_checkbox" type="checkbox" checked>
+                            <span class="filters__status_label">отменённые</span>
+                            <span class="filters__status_custom"></span>
+                        </label>
+                        <label class="done filters__status_item selected-filter">
+                            <input class="filters__status_checkbox" type="checkbox" checked>
+                            <span class="filters__status_label">завершенные</span>
+                            <span class="filters__status_custom"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="filters__item filters__sort-by-date selected-sort">
+                    <p class="filters__sort-by-date_title title">Сортировка по дате:</p>
+                    <button class="filters__sort-by-date_btn btn sort one-w">дата создания</button>
+                </div>
+
+                <div class="filters__item filters__sort-by-priority">
+                    <p class="filters__sort-by-priority_title title">Сортировка по приоритету:</p>
+                    <button class="filters__sort-by-priority_btn btn sort one-w">приоритет</button>
+                </div>
+
+                <div class="filters__item filters__find-by-text">
+                    <label for="filters__find-by-text_text" class="filters__find-by-text_title title">
+                        Поиск задачи по тексту:
+                    </label>
+                    <div class="filters__find-by-text_wrapper">
+                        <input type="text" id="filters__find-by-text_text" class="filters__find-by-text_text"
+                            placeholder="Начните вводить текст...">
+                        <button class="filters__find-by-text_btn btn one-w">Найти</button>
+                    </div>
+                </div>
+            </section>
+            <!-- /filters -->
+
+            <!-- tasks -->
+            <section class="tasks"></section>
+            <!-- /tasks -->
+        </div>
+        <div class="confirm">
+            <div class="confirm__bg"></div>
+            <div class="confirm__wrapper">
+                <div class="confirm__text">Удалить задачу?</div>
+                <div class="task">
+                    <div class="task__priority"></div>
+                    <div class="task__content">
+                        <div class="task__content_text"></div>
+                        <div class="task__content_date"></div>
+                    </div>
+                </div>
+                <div class="confirm__btns">
+                    <button class="confirm__btns_cancel btn">Отменить</button>
+                    <button class="confirm__btns_delete btn">Удалить</button>
+                </div>
+            </div>
+        </div>
+        <div class="loading">
+            <div class="loading__bg"></div>
+            <div class="loading__wrapper">
+                <span class="loader"></span>
+            </div>
+        </div>
+    </div>
+</body>
+
+<script src="index.js"></script>
+
+</html>

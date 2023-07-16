@@ -1,0 +1,1036 @@
+@import 'reset.css';
+
+@mixin font-roboto {
+    font-family: 'Roboto', sans-serif;
+}
+
+// ========================== variables
+$breakpoint-xxs-min: 510px;
+$breakpoint-xs-min: 684px;
+$breakpoint-s-min: 720px;
+$breakpoint-m-min: 880px;
+$breakpoint-l-min: 1024px;
+$breakpoint-xl-min: 1200px;
+$breakpoint-xxl-min: 1400px;
+
+$breakpoint-xxxs-max: $breakpoint-xxs-min - 0.2px;
+$breakpoint-xxs-max: $breakpoint-xs-min - 0.2px;
+$breakpoint-xs-max: $breakpoint-s-min - 0.2px;
+$breakpoint-s-max: $breakpoint-m-min - 0.2px;
+$breakpoint-m-max: $breakpoint-l-min - 0.2px;
+$breakpoint-l-max: $breakpoint-xl-min - 0.2px;
+$breakpoint-xl-max: $breakpoint-xxl-min - 0.2px;
+
+$transition: 0.2s;
+$transition_l: 0.4s;
+$base: 4px;
+
+$fw-regular: 400;
+$fw-bold: 500;
+
+$fs-s: $base*3;
+$fs-m: $base*4;
+$fs-l: $base*5;
+
+$color-white-100: #ffffff;
+$color-gray-100: #e3e3e3;
+$color-gray-200: #707070;
+$color-black-100: #000000;
+
+$color-green-100: #c0eccb;
+$color-green-200: #029929;
+
+$color-yellow-100: #d8a327;
+
+$color-red-100: #f3c8d2;
+$color-red-200: #ce1616;
+// ========================== /variables
+
+
+// ========================== common
+body {
+    position: relative;
+    min-height: 100vh;
+    height: auto;
+}
+
+.wrapper-outer {
+    padding: $base*7 $base*5;
+}
+
+.wrapper-inner {
+    @include font-roboto;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+section {
+    padding: $base*4 $base*5;
+    background-color: $color-gray-100;
+    border-radius: $base;
+}
+
+.title {
+    color: $color-black-100;
+    font-weight: $fw-bold;
+
+    &_gray {
+        color: $color-gray-200;
+        padding-bottom: $base*2;
+
+        &::after {
+            content: ' *';
+            color: $color-red-200;
+        }
+    }
+}
+
+
+.btn {
+    @include font-roboto();
+    font-size: $fs-m;
+    font-weight: $fw-regular;
+    padding: $base $base*2;
+    border-radius: $base;
+    transition: $transition;
+
+    &_done {
+        background: url('../svg/done.svg') no-repeat;
+    }
+
+    &_cancel {
+        background: url('../svg/cancel.svg') no-repeat;
+    }
+
+    &_delete {
+        background: url('../svg/delete.svg') no-repeat;
+    }
+
+    &_save {
+        background: url('../svg/save.svg') no-repeat;
+    }
+}
+
+.dd-list {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+
+    &__selected {
+        position: relative;
+        padding: $base $base*2;
+        background-color: $color-white-100;
+        border-radius: $base;
+        text-align: left;
+        border: 1px solid transparent;
+
+        .visible & {
+            border: 1px solid $color-black-100;
+        }
+
+        &::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: auto;
+            bottom: 0;
+            right: $base;
+            margin: auto 0;
+            background: url('../svg/more.svg') no-repeat;
+            background-size: contain;
+            width: $base*5;
+            height: $base*5;
+            transition: $transition_l;
+
+            .visible & {
+                transform: rotateX(-180deg);
+            }
+        }
+    }
+
+    &__all {
+        position: absolute;
+        top: 100%;
+        width: 100%;
+        margin-top: $base;
+        background-color: $color-white-100;
+        border-radius: $base;
+        transition: $transition_l;
+        max-height: 0;
+        overflow: hidden;
+        z-index: 5;
+        border: 1px solid $color-gray-100;
+
+        .visible & {
+            z-index: 10;
+            max-height: $base*50;
+            border: 1px solid $color-black-100;
+        }
+    }
+
+    &__item {
+        padding: $base $base*2;
+
+        &:not(:last-child) {
+            border-bottom: 1px solid $color-gray-100;
+        }
+
+        .visible &:hover {
+            background-color: lighten($color-gray-100, 5%);
+            cursor: pointer;
+        }
+    }
+}
+
+.one-w {
+    flex-shrink: 0;
+    width: $base*40;
+
+    @media (min-width: $breakpoint-xl-min) {
+        width: $base*50;
+    }
+
+    @media (max-width: $breakpoint-xxs-max) {
+        width: $base*50;
+    }
+
+    @media (max-width: $breakpoint-xxxs-max) {
+        width: 100%;
+    }
+}
+
+// ========================== /common
+
+
+// ========================== new-task
+.new-task {
+    margin-bottom: $base*3;
+    font-size: $fs-m;
+    font-weight: $fw-regular;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+
+    &__priority {
+        display: flex;
+        flex-direction: column;
+        margin-right: $base*3;
+    }
+
+    &__text {
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+        position: relative;
+
+        &_warning {
+            position: absolute;
+            top: $base;
+            right: 0;
+            opacity: 0;
+            color: $color-red-200;
+            font-weight: $fw-bold;
+            transition: $transition;
+
+            .warning & {
+                top: 0;
+                opacity: 1;
+            }
+        }
+
+        &_content {
+            @include font-roboto();
+            font-size: $fs-m;
+            font-weight: $fw-regular;
+            color: $color-black-100;
+            border-radius: $base;
+            padding: $base $base*2;
+            border: 1px solid transparent;
+            transition: $transition;
+            resize: none;
+            overflow-y: hidden;
+
+            &::placeholder {
+                color: $color-gray-200;
+            }
+
+            .warning & {
+                border: 1px solid $color-red-100;
+                box-shadow: 0 0 $base rgba($color-red-200, .5);
+            }
+        }
+    }
+
+    &__btn {
+        align-self: flex-end;
+        margin-left: $base*3;
+        background-color: $color-green-200;
+        color: $color-white-100;
+        transition: $transition;
+
+        &:hover {
+            background-color: darken($color-green-200, 2%);
+        }
+    }
+
+    @media (max-width: $breakpoint-xs-max) {
+        flex-direction: column;
+        position: relative;
+
+        &__text {
+            width: 100%;
+            order: -1;
+            margin-bottom: $base*4;
+        }
+
+        &__btn {
+            position: absolute;
+            bottom: $base*4;
+        }
+    }
+
+    @media (max-width: $breakpoint-xxxs-max) {
+        &__text {
+            order: 0;
+            margin: $base*2 0;
+        }
+
+        &__btn {
+            position: relative;
+            bottom: 0;
+            margin: 0;
+            align-self: flex-start;
+        }
+    }
+
+}
+
+// ========================== /new-task 
+
+
+// ========================== filters
+.filters {
+    @include font-roboto();
+    font-size: $fs-m;
+    font-weight: $fw-regular;
+    color: $color-black-100;
+
+    margin-bottom: $base*3;
+    display: grid;
+    grid-row-gap: $base*4;
+
+    @media (min-width: $breakpoint-xxs-min) {
+        grid-template-columns: 1fr $base*40;
+    }
+
+    @media (min-width: $breakpoint-m-min) {
+        grid-template-columns: 50% 50%;
+    }
+
+    @media (min-width: $breakpoint-l-min) {
+        grid-template-columns: 40% 60%;
+    }
+
+    &__item {
+        display: flex;
+        align-items: center;
+
+        @media (max-width: $breakpoint-xxs-max) {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+    }
+
+    &__priority,
+    &__sort-by-date {
+
+        &_title {
+            width: $base*51;
+        }
+    }
+
+    &__status {
+        &_wrapper {
+            display: flex;
+            justify-content: space-between;
+
+            @media (max-width: $breakpoint-m-max) {
+                width: $base*45;
+            }
+        }
+
+        &_title {
+            padding-right: $base*2;
+
+            @media (min-width: $breakpoint-xl-min) {
+                padding-right: $base*15;
+            }
+        }
+
+        &_item {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        &_label {
+            padding-right: $base;
+            color: $color-gray-200;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            transition: $transition;
+        }
+
+        &_custom {
+            display: inline-block;
+            width: $base*5;
+            height: $base*5;
+            background-color: $color-white-100;
+            border-radius: $base;
+            position: relative;
+
+            &::before {
+                content: '';
+                position: absolute;
+                display: block;
+                width: $base*5;
+                height: $base*5;
+                background-color: gray;
+                opacity: 0;
+                transition: $transition;
+                background: url('../svg/done.svg') no-repeat;
+                background-size: contain;
+            }
+        }
+
+        &_checkbox {
+            display: none;
+
+        }
+
+        .selected-filter {
+            & .filters__status_custom::before {
+                opacity: 1;
+            }
+
+            & .filters__status_label {
+                color: $color-black-100;
+            }
+        }
+
+        @media (min-width: $breakpoint-xxs-min) {
+            grid-column: 2 / 3;
+        }
+
+        @media (max-width: $breakpoint-m-max) {
+            grid-row: 1 / 4;
+            justify-content: flex-end;
+            align-items: flex-start;
+            padding-top: $base*1.25;
+
+            &_wrapper {
+                flex-direction: column;
+                align-self: stretch;
+                padding-left: $base*5;
+            }
+
+            &_label {
+                order: 1;
+                padding-left: $base*2;
+            }
+        }
+
+        @media (max-width: $breakpoint-s-max) {
+            flex-direction: column;
+
+            &_wrapper {
+                padding-top: $base*3;
+                padding-left: 0;
+                height: 100%;
+            }
+        }
+
+        @media (max-width: $breakpoint-xxs-max) {
+            &_wrapper {
+                justify-content: flex-start;
+            }
+
+            &_item:not(:first-child) {
+                margin-top: $base*2;
+            }
+        }
+
+        @media (max-width: $breakpoint-xxxs-max) {
+            grid-row: 2 / 3;
+            flex-direction: column;
+            padding: 0 0 $base*3;
+        }
+
+        @media (min-width: $breakpoint-l-min) {
+            grid-row: 1 / 2;
+            justify-content: space-between;
+            align-items: center;
+
+            &_wrapper {
+                flex-grow: 1;
+            }
+
+            &_label {
+                padding-left: $base*4;
+            }
+        }
+
+    }
+
+    &__sort-by-date,
+    &__sort-by-priority {
+
+        &_btn {
+            background-color: $color-white-100;
+            color: $color-gray-200;
+            position: relative;
+            padding-right: $base*7;
+            padding-left: $base*2;
+            text-align: left;
+            border: 1px solid transparent;
+
+            &::after {
+                content: '';
+                position: absolute;
+                background-size: contain;
+                top: 0;
+                left: auto;
+                bottom: 0;
+                right: $base;
+                margin: auto 0;
+                background: url('../svg/arrow.svg') no-repeat;
+                opacity: .3;
+                background-size: contain;
+                width: $base*5;
+                height: $base*5;
+                transition: $transition;
+            }
+
+            .selected-sort & {
+                color: $color-black-100;
+                border: 1px solid $color-black-100;
+                transition: $transition;
+
+                &::after {
+                    opacity: 1;
+                }
+            }
+
+            .sort-d &::after {
+                transform: rotateX(180deg);
+            }
+        }
+    }
+
+    @media (min-width: $breakpoint-l-min) {
+
+        &__status,
+        &__sort-by-priority {
+
+            &_title {
+                padding-left: $base*5;
+            }
+        }
+
+        &__sort-by-priority {
+            &_btn {
+                margin: 0 auto;
+            }
+        }
+    }
+
+    &__find-by-text {
+        padding-top: $base*5;
+
+        &_wrapper {
+            display: flex;
+            flex-grow: 1;
+        }
+
+        &_text {
+            @include font-roboto();
+            font-size: $fs-m;
+            font-weight: $fw-regular;
+            color: $color-black-100;
+            border-radius: $base;
+            padding: $base $base*2;
+            flex-grow: 1;
+
+            &::placeholder {
+                color: $color-gray-200;
+            }
+        }
+
+        &_btn {
+            margin-left: $base*3;
+            background-color: $color-white-100;
+
+            &:hover {
+                background-color: darken($color-white-100, 3%);
+            }
+        }
+
+        @media (min-width: $breakpoint-l-min) {
+
+            &_title {
+                flex-basis: $base*51;
+            }
+        }
+
+        @media (min-width: $breakpoint-xxs-min) {
+            grid-column: 1 / 3;
+        }
+
+        @media (max-width: $breakpoint-xs-max) {
+            flex-direction: column;
+            align-items: flex-start;
+
+            &_wrapper {
+                width: 100%;
+                margin: $base*2 0;
+            }
+        }
+
+        @media (max-width: $breakpoint-xxxs-max) {
+
+            &_wrapper {
+                flex-direction: column;
+                margin: 0;
+            }
+
+            &_btn {
+                margin: $base*2 0;
+            }
+        }
+    }
+
+    &__priority,
+    &__sort-by-date,
+    &__sort-by-priority,
+    &__find-by-text {
+
+        &_title {
+            @media (max-width: $breakpoint-m-max) {
+                flex-basis: $base*60;
+            }
+
+            @media (max-width: $breakpoint-xxs-max) {
+                flex-basis: auto;
+                padding-bottom: $base*2;
+            }
+        }
+    }
+
+    @media (max-width: $breakpoint-xs-max) {
+        &__find-by-text_title {
+            flex-basis: auto;
+        }
+    }
+}
+
+// ========================== /filters
+
+
+// ========================== tasks
+.tasks {
+    padding: 0 $base*2;
+    max-height: 50vh;
+    overflow-y: scroll;
+}
+
+.task {
+    display: flex;
+    align-items: flex-start;
+    padding: $base*3 $base*2;
+    font-size: $fs-m;
+
+    .done & {
+        &__priority {
+            color: $color-green-200;
+        }
+
+        &__content {
+            background-color: $color-green-100;
+
+            &_done {
+                opacity: 0;
+            }
+
+            &_cancel {
+                top: 0;
+            }
+        }
+
+    }
+
+    .active & {
+        &__priority {
+            color: $color-yellow-100;
+        }
+
+        &__content {
+            background-color: $color-white-100;
+        }
+    }
+
+    .canceled & {
+        &__priority {
+            color: $color-red-200;
+        }
+
+        &__content {
+            background-color: $color-red-100;
+
+            &_done {
+                top: 0;
+            }
+
+            &_cancel {
+                top: 100%;
+                opacity: 0;
+            }
+        }
+
+    }
+
+    &__priority {
+        text-align: center;
+        flex: 0 0 10%;
+        transition: $transition_l;
+        margin: 0 $base*3;
+        padding-top: $base*3;
+    }
+
+    &__content {
+        flex-grow: 1;
+        border-radius: $base;
+        display: flex;
+        justify-content: space-between;
+        padding: $base*3;
+        transition: $transition_l;
+
+        &_info {
+            width: 100%;
+        }
+
+        &_text {
+            @include font-roboto();
+            font-size: $fs-m;
+            line-height: $fs-l;
+            font-weight: $fw-regular;
+            color: $color-black-100;
+            margin-bottom: $base*5;
+            width: 100%;
+            cursor: pointer;
+            resize: none;
+            background-color: transparent;
+            overflow-y: hidden;
+        }
+
+        &_date {
+            font-size: $fs-s;
+        }
+
+        &_status {
+            flex-basis: $base*11;
+            display: flex;
+            flex-direction: column;
+            padding-left: $base*3;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn {
+            background-color: transparent;
+            width: $base*8;
+            height: $base*8;
+            background-size: contain;
+            position: absolute;
+            transition: $transition_l;
+        }
+
+        &_done {
+            top: 0;
+        }
+
+        &_cancel {
+            top: $base*10;
+        }
+
+        &_save {
+            top: 100%;
+            opacity: 0;
+        }
+    }
+
+    &__delete {
+        flex-shrink: 0;
+        margin: $base*3 $base*3 0;
+        background-size: contain;
+        width: $base*8;
+        height: $base*8;
+    }
+
+    @media (max-width: $breakpoint-xxxs-max) {
+        flex-direction: column;
+        position: relative;
+
+        &__priority {
+            margin: 0;
+            padding-bottom: $base;
+        }
+
+        &__content {
+            width: 90%;
+        }
+
+        &__delete {
+            position: absolute;
+            top: $base*13;
+            right: 0;
+            margin: 0;
+        }
+    }
+}
+
+.changing .btn {
+
+    &_cancel,
+    &_done {
+        opacity: 0;
+        top: -100%;
+    }
+
+    &_save {
+        opacity: 1;
+        top: 0;
+    }
+}
+
+// ========================== /tasks
+
+// ========================== confirm
+.confirm {
+    @include font-roboto();
+    font-size: $fs-m;
+    font-weight: $fw-regular;
+    position: absolute;
+    display: none;
+    inset: 0;
+
+    .show &__bg {
+        display: flex;
+        position: absolute;
+        inset: 0;
+        background-color: rgba($color-black-100, 0.3);
+        z-index: 19;
+    }
+
+    &__wrapper {
+        margin: auto;
+        max-width: $base*150;
+        min-width: $base*75;
+        padding: $base*10 $base*5;
+        background-color: $color-white-100;
+        z-index: 20;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        border-radius: $base;
+    }
+
+    &__btns {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        margin-top: $base*2;
+        padding: 0 $base*2;
+
+        .btn {
+            flex-basis: $base*30;
+            background-size: contain;
+            padding: $base*2 $base $base*2 $base*5;
+            transition: $transition;
+        }
+
+        &_delete {
+            background-color: $color-red-100;
+
+            &::before {
+                background: url('../svg/delete.svg') no-repeat;
+            }
+
+            &:hover {
+                background-color: darken($color-red-100, 5%);
+            }
+        }
+
+        &_cancel {
+            background-color: $color-green-100;
+
+            &::before {
+                background: url('../svg/cancel.svg') no-repeat;
+            }
+
+            &:hover {
+                background-color: darken($color-green-100, 5%);
+            }
+        }
+
+        &_delete,
+        &_cancel {
+            position: relative;
+
+            &::before {
+                content: '';
+                position: absolute;
+                left: $base;
+                display: block;
+                width: $base*5;
+                height: $base*5;
+                background-size: contain;
+            }
+        }
+    }
+
+    .task {
+        flex-direction: column;
+        align-items: flex-start;
+        width: 100%;
+
+        &__priority {
+            margin: 0;
+        }
+
+        &__content {
+            flex-direction: column;
+            margin-top: $base*2;
+            max-height: 30vh;
+
+            border: 1px solid $color-gray-200;
+            width: 100%;
+
+            &_text {
+                word-wrap: break-word;
+                white-space: pre-wrap;
+                cursor: default;
+                overflow-y: scroll;
+            }
+        }
+    }
+}
+
+.show.confirm {
+    display: flex;
+}
+
+.confirm .task__content_text,
+.tasks {
+    &::-webkit-scrollbar {
+        width: $base*1.5;
+    }
+
+    &::-webkit-scrollbar-track {
+        border-radius: $base;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: $color-gray-200;
+        border-radius: $base;
+    }
+}
+
+// ========================== /confirm
+
+// ========================== loading
+.loading {
+    position: absolute;
+    display: none;
+    inset: 0;
+
+    .show &__bg {
+        position: absolute;
+        inset: 0;
+        background-color: rgba($color-black-100, 0.2);
+        z-index: 19;
+    }
+
+    &__wrapper {
+        margin: auto;
+        z-index: 20;
+        display: flex;
+    }
+}
+
+.show.loading {
+    display: flex;
+
+    .loader {
+        width: $base*20;
+        height: $base*20;
+        border-radius: 50%;
+        display: inline-block;
+        position: relative;
+        border: $base*1.5 solid;
+        border-color: $color-gray-200 $color-gray-200 transparent transparent;
+        box-sizing: border-box;
+        animation: rotation 1s linear infinite;
+    }
+
+    .loader::after,
+    .loader::before {
+        content: '';
+        box-sizing: border-box;
+        position: absolute;
+        inset: 0;
+        margin: auto;
+        border: $base*1.5 solid;
+        border-color: transparent transparent $color-gray-100 $color-gray-100;
+        width: $base*15;
+        height: $base*15;
+        border-radius: 50%;
+        box-sizing: border-box;
+        animation: rotationBack 0.5s linear infinite;
+        transform-origin: center center;
+    }
+
+    .loader::before {
+        width: $base*10;
+        height: $base*10;
+        border-color: $color-gray-200 $color-gray-200 transparent transparent;
+        animation: rotation 1.5s linear infinite;
+    }
+
+    @keyframes rotation {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+
+    @keyframes rotationBack {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(-360deg);
+        }
+    }
+}
+
+// ========================== /loading
